@@ -1,0 +1,620 @@
+---
+export interface Props {
+  id: string;
+  name: string;
+  placeholder?: string;
+}
+
+const { id, name, placeholder = "" } = Astro.props;
+---
+
+<div class="form-date" data-name={name}>
+  <!-- Readonly visible input; opens the custom calendar overlay -->
+  <input
+    type="text"
+    id={id}
+    class="date-input"
+    placeholder={placeholder || "Select a date"}
+    readonly
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    aria-controls={`${id}-calendar`}
+  />
+
+  <!-- Hidden ISO input used for form submission -->
+  <input type="hidden" name={name} class="date-hidden" />
+
+  <!-- Icon button for affordance (non-tracking, purely UI) -->
+  <button
+    type="button"
+    class="date-toggle"
+    aria-label="Open calendar"
+    title="Open calendar"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+      <line x="16" y="2" x2="16" y2="6"></line>
+      <line x="8" y="2" x2="8" y2="6"></line>
+      <line x="3" y="10" x2="21" y2="10"></line>
+    </svg>
+  </button>
+
+  <!-- Calendar overlay (keeps site look and rounded corners) -->
+  <div
+    class="calendar-overlay"
+    id={`${id}-calendar`}
+    role="dialog"
+    aria-modal="false"
+    aria-label="Select date"
+    hidden
+  >
+    <div class="calendar-card" role="document">
+      <div class="calendar-header">
+        <button type="button" class="nav prev" aria-label="Previous month"
+          >‹</button
+        >
+        <div class="month-title" aria-live="polite"></div>
+        <button type="button" class="nav next" aria-label="Next month">›</button
+        >
+      </div>
+
+      <div class="weekday-row" aria-hidden="true"></div>
+      <div class="days-grid" role="grid" tabindex="0"></div>
+
+      <div class="calendar-footer">
+        <button type="button" class="btn-clear">Clear</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn-today">Today</button>
+        <button type="button" class="btn-done">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --fd-radius: 0.9rem;
+    --fd-padding: 0.6rem;
+  }
+
+  .form-date {
+    position: relative;
+    width: 100%;
+    font-family: var(--primary-font);
+  }
+
+  .date-input {
+    width: 100%;
+    padding: 0.75rem 3rem 0.75rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.75rem;
+    border: 2px solid transparent;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.12s ease;
+  }
+
+  .date-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: var(--card-color);
+  }
+
+  .date-toggle {
+    position: absolute;
+    right: 0.55rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: 0.35rem;
+    border-radius: 0.5rem;
+    color: var(--text-color-lighten);
+    cursor: pointer;
+  }
+
+  .date-toggle:hover {
+    background: var(--card-color-transparent);
+    color: var(--primary-color);
+  }
+
+  /* Overlay that appears when calendar is open */
+  .calendar-overlay {
+    position: absolute;
+    z-index: 40;
+    right: 0;
+    top: calc(100% + 0.6rem);
+    min-width: 280px;
+    background: transparent;
+  }
+
+  .calendar-card {
+    background: var(--card-color);
+    color: var(--text-color);
+    border-radius: var(--fd-radius);
+    padding: 0.6rem;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    border: 1px solid transparent;
+    width: 320px;
+  }
+
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .nav {
+    background: transparent;
+    border: 2px solid transparent;
+    color: var(--text-color);
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    font-size: 1.05rem;
+  }
+
+  .nav:hover {
+    background: var(--card-color-transparent);
+    border-color: var(--primary-color-hover);
+  }
+
+  .month-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.98rem;
+    color: var(--text-color);
+  }
+
+  .weekday-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.35rem;
+    margin-bottom: 0.35rem;
+    color: var(--text-color-lighten);
+    font-size: 0.78rem;
+    text-align: center;
+    user-select: none;
+  }
+
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.45rem;
+  }
+
+  .day {
+    min-height: 42px;
+    aspect-ratio: 1 / 1;
+    border-radius: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0.45rem;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-color);
+    border: 2px solid transparent;
+    transition:
+      transform 0.12s ease,
+      background-color 0.12s ease,
+      border-color 0.12s ease;
+  }
+
+  .day:hover {
+    transform: translateY(-2px);
+    background: var(--card-color-transparent);
+    border-color: var(--primary-color-hover);
+  }
+
+  .day.disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .day .num {
+    font-weight: 700;
+    font-size: 0.92rem;
+  }
+
+  .day .dot {
+    margin-left: auto;
+    margin-top: auto;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+  }
+
+  .day.selected {
+    background: var(--primary-color);
+    color: var(--background-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  }
+
+  .day.today {
+    box-shadow: inset 0 0 0 2px var(--primary-color-hover);
+  }
+
+  .calendar-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+  }
+
+  .calendar-footer .spacer {
+    flex: 1 1 auto;
+  }
+
+  .calendar-footer button {
+    background: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid transparent;
+    padding: 0.45rem 0.7rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .calendar-footer .btn-done {
+    background: var(--primary-color);
+    color: var(--background-color);
+  }
+
+  @media (max-width: 640px) {
+    .calendar-card {
+      width: 100vw;
+      left: 0;
+      right: 0;
+      border-radius: 0.6rem;
+    }
+    .calendar-overlay {
+      position: fixed;
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    const root = document.currentScript
+      ? document.currentScript.previousElementSibling
+      : document.querySelector('.form-date[data-name="{name}"]');
+    // If script is executed during SSR hydration, currentScript may be null; fall back gracefully
+    const container =
+      root ||
+      document.querySelector('.form-date[data-name="{name}"]') ||
+      document.querySelector(".form-date");
+
+    if (!container) return;
+
+    const input = container.querySelector(".date-input");
+    const hidden = container.querySelector(".date-hidden");
+    const toggle = container.querySelector(".date-toggle");
+    const overlay = container.querySelector(".calendar-overlay");
+    const monthTitle = container.querySelector(".month-title");
+    const weekdayRow = container.querySelector(".weekday-row");
+    const daysGrid = container.querySelector(".days-grid");
+    const btnPrev = container.querySelector(".nav.prev");
+    const btnNext = container.querySelector(".nav.next");
+    const btnClear = container.querySelector(".btn-clear");
+    const btnToday = container.querySelector(".btn-today");
+    const btnDone = container.querySelector(".btn-done");
+
+    const locale =
+      typeof navigator !== "undefined" && navigator.language
+        ? navigator.language
+        : "en-US";
+
+    let viewYear, viewMonth; // JS month: 0-11
+    let selectedISO = hidden.value || "";
+
+    function startToday() {
+      const t = new Date();
+      viewYear = t.getFullYear();
+      viewMonth = t.getMonth();
+    }
+
+    function formatVisible(iso) {
+      if (!iso) return "";
+      try {
+        const dt = new Date(iso + "T00:00:00");
+        return dt.toLocaleDateString(locale, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+      } catch (e) {
+        return iso;
+      }
+    }
+
+    function renderWeekdays() {
+      weekdayRow.innerHTML = "";
+      // Use a fixed Sunday-start set for predictable layout
+      const base = new Date(Date.UTC(1970, 0, 4)); // Sunday
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(base);
+        d.setUTCDate(base.getUTCDate() + i);
+        const w = d.toLocaleDateString(locale, { weekday: "short" });
+        const el = document.createElement("div");
+        el.className = "weekday";
+        el.textContent = w;
+        weekdayRow.appendChild(el);
+      }
+    }
+
+    function daysInMonth(y, m) {
+      return new Date(y, m + 1, 0).getDate();
+    }
+
+    function firstDayWeekIndex(y, m) {
+      return new Date(y, m, 1).getDay(); // 0..6 (Sun..Sat)
+    }
+
+    function clearDays() {
+      daysGrid.innerHTML = "";
+    }
+
+    function renderMonth() {
+      monthTitle.textContent = new Date(
+        viewYear,
+        viewMonth,
+        1,
+      ).toLocaleDateString(locale, { year: "numeric", month: "long" });
+      clearDays();
+
+      const start = firstDayWeekIndex(viewYear, viewMonth);
+      const total = daysInMonth(viewYear, viewMonth);
+
+      // leading blanks
+      for (let i = 0; i < start; i++) {
+        const b = document.createElement("div");
+        b.className = "day disabled";
+        daysGrid.appendChild(b);
+      }
+
+      // days
+      for (let d = 1; d <= total; d++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "day";
+        const iso = `${String(viewYear).padStart(4, "0")}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+        const num = document.createElement("div");
+        num.className = "num";
+        num.textContent = String(d);
+
+        btn.appendChild(num);
+
+        // dot placeholder (keeps style consistent if later events added)
+        const dot = document.createElement("div");
+        dot.className = "dot";
+        btn.appendChild(dot);
+
+        if (iso === selectedISO) {
+          btn.classList.add("selected");
+        }
+
+        // mark today
+        const todayISO = new Date().toISOString().slice(0, 10);
+        if (iso === todayISO) {
+          btn.classList.add("today");
+        }
+
+        btn.addEventListener("click", () => {
+          // deselect previous
+          const prev = daysGrid.querySelector(".day.selected");
+          if (prev) prev.classList.remove("selected");
+          btn.classList.add("selected");
+          selectedISO = iso;
+          hidden.value = iso;
+          input.value = formatVisible(iso);
+          // keep overlay open to allow Done/clear actions; user can close with Done or outside click
+        });
+
+        daysGrid.appendChild(btn);
+      }
+    }
+
+    function openOverlay() {
+      overlay.hidden = false;
+      input.setAttribute("aria-expanded", "true");
+      // position focus for keyboard users
+      daysGrid.focus();
+    }
+
+    function closeOverlay() {
+      overlay.hidden = true;
+      input.setAttribute("aria-expanded", "false");
+      // return focus to input for continuity
+      input.focus();
+    }
+
+    // initialize
+    startToday();
+    renderWeekdays();
+    renderMonth();
+
+    // If there is an existing hidden value (e.g., server-side), sync visible input
+    if (hidden.value) {
+      selectedISO = hidden.value;
+      input.value = formatVisible(hidden.value);
+      // ensure month view contains the selected date
+      const parts = hidden.value.split("-");
+      if (parts.length === 3) {
+        const y = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10) - 1;
+        if (!isNaN(y) && !isNaN(m)) {
+          viewYear = y;
+          viewMonth = m;
+          renderMonth();
+        }
+      }
+    }
+
+    // Event handlers
+    toggle.addEventListener("click", () => {
+      if (overlay.hidden) {
+        openOverlay();
+      } else {
+        closeOverlay();
+      }
+    });
+
+    input.addEventListener("click", () => {
+      if (overlay.hidden) openOverlay();
+      else closeOverlay();
+    });
+
+    btnPrev.addEventListener("click", () => {
+      viewMonth--;
+      if (viewMonth < 0) {
+        viewMonth = 11;
+        viewYear--;
+      }
+      renderMonth();
+    });
+
+    btnNext.addEventListener("click", () => {
+      viewMonth++;
+      if (viewMonth > 11) {
+        viewMonth = 0;
+        viewYear++;
+      }
+      renderMonth();
+    });
+
+    btnClear.addEventListener("click", () => {
+      selectedISO = "";
+      hidden.value = "";
+      input.value = "";
+      // remove selection mark
+      const prev = daysGrid.querySelector(".day.selected");
+      if (prev) prev.classList.remove("selected");
+    });
+
+    btnToday.addEventListener("click", () => {
+      const t = new Date();
+      viewYear = t.getFullYear();
+      viewMonth = t.getMonth();
+      renderMonth();
+      const iso = t.toISOString().slice(0, 10);
+      // select today
+      const btn = daysGrid.querySelector(`.day .num`);
+      // Find the correct button by scanning children for matching date text (simple, reliable)
+      const buttons = Array.from(daysGrid.querySelectorAll(".day"));
+      for (const b of buttons) {
+        const numEl = b.querySelector(".num");
+        if (!numEl) continue;
+        const d = parseInt(numEl.textContent, 10);
+        const candidate = `${String(viewYear).padStart(4, "0")}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        if (candidate === iso) {
+          b.click();
+          break;
+        }
+      }
+    });
+
+    btnDone.addEventListener("click", () => {
+      closeOverlay();
+    });
+
+    // Close overlay on outside click
+    document.addEventListener("click", (ev) => {
+      if (!overlay.hidden) {
+        if (!container.contains(ev.target)) {
+          closeOverlay();
+        }
+      }
+    });
+
+    // Keyboard support
+    document.addEventListener("keydown", (ev) => {
+      if (overlay.hidden) return;
+      if (ev.key === "Escape") {
+        closeOverlay();
+      } else if (ev.key === "ArrowLeft") {
+        // move to previous day (if a day is selected)
+        const selected = daysGrid.querySelector(".day.selected");
+        if (selected) {
+          const num = parseInt(selected.querySelector(".num").textContent, 10);
+          let targetNum = num - 1;
+          if (targetNum < 1) {
+            // go to prev month
+            btnPrev.click();
+            // choose last day of prev month
+            setTimeout(() => {
+              const nodes = Array.from(
+                daysGrid.querySelectorAll(".day:not(.disabled)"),
+              );
+              if (nodes.length) {
+                nodes[nodes.length - 1].click();
+              }
+            }, 0);
+          } else {
+            const nodes = Array.from(
+              daysGrid.querySelectorAll(".day:not(.disabled)"),
+            );
+            const node = nodes.find(
+              (n) =>
+                parseInt(n.querySelector(".num").textContent, 10) === targetNum,
+            );
+            if (node) node.click();
+          }
+          ev.preventDefault();
+        }
+      } else if (ev.key === "ArrowRight") {
+        const selected = daysGrid.querySelector(".day.selected");
+        if (selected) {
+          const num = parseInt(selected.querySelector(".num").textContent, 10);
+          let targetNum = num + 1;
+          const total = daysInMonth(viewYear, viewMonth);
+          if (targetNum > total) {
+            btnNext.click();
+            setTimeout(() => {
+              const nodes = Array.from(
+                daysGrid.querySelectorAll(".day:not(.disabled)"),
+              );
+              if (nodes.length) {
+                nodes[0].click();
+              }
+            }, 0);
+          } else {
+            const nodes = Array.from(
+              daysGrid.querySelectorAll(".day:not(.disabled)"),
+            );
+            const node = nodes.find(
+              (n) =>
+                parseInt(n.querySelector(".num").textContent, 10) === targetNum,
+            );
+            if (node) node.click();
+          }
+          ev.preventDefault();
+        }
+      }
+    });
+  })();
+</script>

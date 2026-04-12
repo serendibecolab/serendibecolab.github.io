@@ -1,0 +1,154 @@
+---
+import FormDate from "../../components/booking/FormDate.astro";
+import FormSelect from "../../components/booking/FormSelect.astro";
+---
+
+# Book Your Wildlife Tour or Research Trip
+
+Fill out the form below to book your wildlife photography tour, research trip, or expedition with Serendib Eco Lab. We'll get back to you soon!
+
+<div class="booking-form-wrapper">
+  <form name="booking" method="POST" data-netlify="true" class="booking-form">
+    <input type="hidden" name="form-name" value="booking">
+    
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required placeholder="Your full name">
+    </div>
+    
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+    </div>
+    
+    <div class="form-group">
+      <label for="tour">Tour/Trip Interested In</label>
+      <FormSelect id="tour" name="tour" required={true} placeholder="Select a tour or expedition" options={[
+        { value: "Sinharaja Rainforest Expedition", label: "Sinharaja Rainforest Expedition" },
+        { value: "Yala National Park Safari", label: "Yala National Park Safari" },
+        { value: "Wilpattu National Park Safari", label: "Wilpattu National Park Safari" },
+        { value: "Knuckles Mountain Range Trek", label: "Knuckles Mountain Range Trek" },
+        { value: "Whale Watching in Mirissa", label: "Whale Watching in Mirissa" },
+        { value: "Turtle Conservation Tour", label: "Turtle Conservation Tour" },
+        { value: "Birdwatching in Sinharaja", label: "Birdwatching in Sinharaja" },
+        { value: "Custom Research Expedition", label: "Custom Research Expedition" },
+        { value: "Other", label: "Other (please specify in message)" }
+      ]} />
+    </div>
+    
+    <div class="form-group">
+      <label for="dates">Preferred Start Date <span class="optional">(optional)</span></label>
+      <FormDate id="dates" name="dates" />
+    </div>
+    
+    <div class="form-group">
+      <label for="message">Message <span class="optional">(optional)</span></label>
+      <textarea id="message" name="message" rows="4" placeholder="Any specific requests or questions?"></textarea>
+    </div>
+    
+    <button type="submit" class="submit-btn">
+      <span>Book Now</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </button>
+  </form>
+</div>
+
+---
+
+**How it works:**  
+Your booking request will be securely submitted to our team. We will review your details and contact you to confirm your booking and provide further information.
+
+If you have any questions, feel free to email us at [info@serendibecolab.com](mailto:info@serendibecolab.com).
+
+<style>
+  .booking-form-wrapper {
+    @apply my-8 rounded-2xl bg-[var(--card-color)] p-6 md:p-8;
+  }
+
+  .booking-form {
+    @apply flex flex-col gap-5;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .form-group {
+    @apply flex flex-col gap-2;
+  }
+
+  .form-group label {
+    @apply text-sm font-medium;
+    color: var(--text-color);
+    font-family: var(--primary-font);
+  }
+
+  .form-group .optional {
+    @apply text-xs font-normal;
+    color: var(--text-color-lighten);
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    @apply w-full rounded-lg px-4 py-3 text-base transition-all;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 2px solid transparent;
+    font-family: var(--primary-font);
+  }
+
+  /* Keep select appearance consistent when using the FormSelect component */
+  .form-group select,
+  .form-select select {
+    @apply cursor-pointer appearance-none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 3rem;
+  }
+
+  .form-group select option {
+    background-color: var(--card-color);
+    color: var(--text-color);
+  }
+
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: var(--text-color-lighten);
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    @apply outline-none;
+    border-color: var(--primary-color);
+    background-color: var(--card-color);
+  }
+
+  .form-group textarea {
+    @apply resize-none;
+  }
+
+  .submit-btn {
+    @apply mt-2 flex w-full cursor-pointer flex-row items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-medium transition-all;
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    font-family: var(--primary-font);
+  }
+
+  .submit-btn:hover {
+    background-color: var(--primary-color-hover);
+    @apply brightness-90;
+  }
+
+  .submit-btn svg {
+    @apply transition-transform;
+  }
+
+  .submit-btn:hover svg {
+    @apply translate-x-1;
+  }
+</style>
