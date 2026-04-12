@@ -7,37 +7,57 @@ export interface Props {
   subTitle?: string;
 }
 
-// Props are accepted but not used in template rendering
+// Use secondBanners from site config (fallback to empty array)
+const carouselImgsList = (SiteConfig.secondBanners ?? []) as {
+  src: string;
+  focalPoint?: string;
+  textLines?: string[];
+}[];
 
-let carouselImgsList = SiteConfig.secondBanners;
-const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
+// Read global interval from site config; fallback to 15s
+const intervalSeconds =
+  SiteConfig?.bannerSettings?.intervalSeconds &&
+  typeof SiteConfig.bannerSettings.intervalSeconds === "number"
+    ? SiteConfig.bannerSettings.intervalSeconds
+    : 15;
+
+// Total animation time for full loop (CSS variable)
+const carouselAnimationTime = `${(carouselImgsList.length || 0) * intervalSeconds}s`;
 ---
 
-<div id="second-banner" class="banner relative z-10" data-banner-config={JSON.stringify(carouselImgsList)}>
+<div
+  id="second-banner"
+  class="banner relative z-10"
+  data-banner-config={JSON.stringify(carouselImgsList)}
+  style={`--carouselAnimationTime: ${carouselAnimationTime}`}
+  data-carousel-interval={String(intervalSeconds)}
+>
   <div class="transition-main banner-inner h-full w-full">
     <div class="carousel">
       <ul id="second_carousel_imgs">
-        {carouselImgsList.map((img, index) => (
-                      <li
-                      class="item"
-                      style={{
-                        animationDelay: `${index * 10}s`,
-                      }}
-                    >
-                      <Image
-                        src={img.src}
-                        alt={`Second banner image ${index + 1}`}
-                        width={1920}
-                        height={1080}
-                        class="absolute inset-0 h-full w-full object-cover"
-                        style={{ objectPosition: img.focalPoint }}
-                      />
-                    </li>        ))}
+        {
+          carouselImgsList.map((img, index) => (
+            <li
+              class="item"
+              style={{
+                animationDelay: `${index * intervalSeconds}s`,
+              }}
+            >
+              <Image
+                src={img.src}
+                alt={`Second banner image ${index + 1}`}
+                width={1920}
+                height={1080}
+                class="absolute inset-0 h-full w-full object-cover"
+                style={{ objectPosition: img.focalPoint ?? "center" }}
+              />
+            </li>
+          ))
+        }
       </ul>
     </div>
 
     <div class="relative h-[95%] w-full">
-      <!-- Dynamic text bottom-left -->
       <div
         id="second-dynamic-banner-text"
         class="absolute bottom-8 left-8 z-20 max-w-[80%] p-4 text-left drop-shadow-md font-[var(--subtitle-font)] leading-tight"
@@ -46,17 +66,32 @@ const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
       </div>
     </div>
   </div>
-
-
 </div>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const styleElement = document.createElement("style");
+    const bannerElement = document.getElementById("second-banner");
+    if (!bannerElement) return;
+
     const carouselImgs = document.getElementById("second_carousel_imgs");
     const carouselImgsCount = carouselImgs?.children.length ?? 0;
-    const carouselAnimationTime = `${carouselImgsCount * 15}s`;
 
+    // configured interval: prefer dataset value set server-side, fallback to 15
+    const configuredInterval =
+      Number(bannerElement?.dataset?.carouselInterval) || 15;
+
+    // if no images, nothing to animate
+    if (!carouselImgsCount) return;
+
+    const carouselAnimationTime = `${carouselImgsCount * configuredInterval}s`;
+
+    // Ensure CSS var is set so CSS takes the same total duration
+    bannerElement.style.setProperty(
+      "--carouselAnimationTime",
+      carouselAnimationTime,
+    );
+
+    // Build keyframes dynamically in case the number of slides changes
     const carouselAnimation = `
       @keyframes carousel-animation {
         0% { opacity: 0; transform: scale(1); }
@@ -68,65 +103,68 @@ const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
       }
     `;
 
+    const styleElement = document.createElement("style");
     styleElement.textContent = carouselAnimation;
-    const bannerElement = document.getElementById("second-banner");
-    if (bannerElement && !bannerElement.querySelector("style"))
+    if (!bannerElement.querySelector("style")) {
       bannerElement.appendChild(styleElement);
-
-    if (carouselImgs) {
-      Array.from(carouselImgs.children).forEach((item, index) => {
-        (item as HTMLElement).style.animationDuration = carouselAnimationTime;
-        (item as HTMLElement).style.animationDelay = `${index * 15}s`;
-      });
     }
 
-    // Dynamic Text Logic
-    const dynamicBannerTextDiv = document.getElementById("second-dynamic-banner-text");
-    const bannerConfigData = bannerElement?.dataset.bannerConfig;
-    let carouselImgsList: Array<{ src?: string; focalPoint?: string; textLines?: string[] }> = [];
+    // Apply per-item animation duration and delay
+    Array.from(carouselImgs.children).forEach((item, index) => {
+      (item as HTMLElement).style.animationDuration = carouselAnimationTime;
+      (item as HTMLElement).style.animationDelay =
+        `${index * configuredInterval}s`;
+    });
 
+    // Dynamic text scheduling (kept in sync with interval)
+    const dynamicBannerTextDiv = document.getElementById(
+      "second-dynamic-banner-text",
+    );
+    const bannerConfigData = bannerElement.dataset.bannerConfig;
+    let items = [];
     if (bannerConfigData) {
       try {
-        carouselImgsList = JSON.parse(bannerConfigData);
+        items = JSON.parse(bannerConfigData);
       } catch (e) {
-        console.error("Failed to parse banner config data:", e);
+        // ignore parse errors
+        items = [];
       }
     }
 
-    const imageDisplayInterval = 15 * 1000;
+    const imageDisplayInterval = configuredInterval * 1000;
 
-    function updateTextContent(index: number) {
-      if (!dynamicBannerTextDiv || !carouselImgsList.length) return;
-
+    function updateTextContent(index) {
+      if (!dynamicBannerTextDiv || !items.length) return;
       dynamicBannerTextDiv.style.opacity = "0";
       setTimeout(() => {
         dynamicBannerTextDiv.innerHTML = "";
-        const currentImage = carouselImgsList[index];
-        if (currentImage && currentImage.textLines) {
-          (currentImage.textLines ?? []).forEach((line: string, lineIndex: number) => {
+        const current = items[index];
+        if (current && current.textLines) {
+          (current.textLines || []).forEach((line, lineIdx) => {
             const p = document.createElement("p");
             p.textContent = line;
-            p.style.fontSize = lineIndex === 0
-              ? "clamp(1rem, 2.5vw, 2rem)"
-              : "clamp(0.9rem, 2vw, 1.6rem)";
-            p.style.color = "#ffffff"; // Dynamic text in white
+            p.style.fontSize =
+              lineIdx === 0
+                ? "clamp(1rem, 2.5vw, 2rem)"
+                : "clamp(0.9rem, 2vw, 1.6rem)";
+            p.style.color = "#ffffff";
             dynamicBannerTextDiv.appendChild(p);
           });
         }
         dynamicBannerTextDiv.style.opacity = "1";
-      }, 50);
+      }, 60);
     }
 
     function scheduleTextUpdates() {
-      carouselImgsList.forEach((_, index) => {
-        const imageAnimationStartTime = index * imageDisplayInterval;
-        setTimeout(() => updateTextContent(index), imageAnimationStartTime);
+      items.forEach((_, idx) => {
+        const start = idx * imageDisplayInterval;
+        setTimeout(() => updateTextContent(idx), start);
       });
     }
 
     scheduleTextUpdates();
-    const totalLoopDuration = carouselImgsList.length * imageDisplayInterval;
-    setInterval(scheduleTextUpdates, totalLoopDuration);
+    const totalLoop = items.length * imageDisplayInterval;
+    setInterval(scheduleTextUpdates, totalLoop);
   });
 </script>
 
@@ -146,8 +184,9 @@ const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
   }
 
   .carousel .item {
-    @apply absolute left-0 top-0 z-0 h-full w-full origin-center opacity-0; /* Removed bg-cover, bg-center, bg-no-repeat */
-    animation: carousel-animation var(--carouselAnimationTime) linear infinite 0s;
+    @apply absolute left-0 top-0 z-0 h-full w-full origin-center opacity-0;
+    animation: carousel-animation var(--carouselAnimationTime) linear infinite
+      0s;
     backface-visibility: hidden;
     transform-style: preserve-3d;
   }
@@ -161,27 +200,6 @@ const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
     transition: opacity 0.3s ease-in-out;
     z-index: 20;
     color: #ffffff;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-  }
-
-  .scroll-indicator {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 20;
-  }
-
-  @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-      transform: translateX(-50%) translateY(0);
-    }
-    40% { transform: translateX(-50%) translateY(-10px); }
-    60% { transform: translateX(-50%) translateY(-5px); }
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
   }
 </style>
