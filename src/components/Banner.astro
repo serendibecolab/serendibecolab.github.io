@@ -9,19 +9,32 @@ export interface Props {
     src: string;
     alt: string;
   };
-  bannerImageLoop?: { src: string; focalPoint: string }[];
+  bannerImageLoop?: { src: string; focalPoint?: string; textLines?: string[] }[];
 }
 const { title, subTitle, coverImage, bannerImageLoop } = Astro.props;
 
 const hasTitle = title !== undefined || subTitle !== undefined;
 
-let carouselImgsList = (bannerImageLoop && bannerImageLoop.length > 0)
+const carouselImgsList = (bannerImageLoop && bannerImageLoop.length > 0)
   ? bannerImageLoop
-  : SiteConfig.banners;
-const carouselAnimationTime = `${carouselImgsList.length * 15}s`;
+  : (SiteConfig.banners ?? []);
+
+// interval (seconds) per image, configurable from site.config.ts
+const intervalSeconds = (SiteConfig.bannerSettings && typeof SiteConfig.bannerSettings.intervalSeconds === "number")
+  ? SiteConfig.bannerSettings.intervalSeconds
+  : 15;
+
+// total animation time for full loop
+const carouselAnimationTime = `${carouselImgsList.length * intervalSeconds}s`;
 ---
 
-<div id="banner" class="banner relative z-10" { ...coverImage ? {} : { 'data-banner-config': JSON.stringify(carouselImgsList) } }>
+<div
+  id="banner"
+  class="banner relative z-10"
+  { ...coverImage ? {} : { 'data-banner-config': JSON.stringify(carouselImgsList) } }
+  style={`--carouselAnimationTime: ${carouselAnimationTime}`}
+  data-carousel-interval={String(intervalSeconds)}
+>
   <div class="transition-main banner-inner h-full w-full">
     {coverImage ? (
       <div class="carousel">
@@ -40,7 +53,7 @@ const carouselAnimationTime = `${carouselImgsList.length * 15}s`;
             <li
               class="item"
               style={{
-                animationDelay: `${index * 15}s`,
+                animationDelay: `${index * intervalSeconds}s`,
               }}
             >
               <Image
@@ -49,7 +62,7 @@ const carouselAnimationTime = `${carouselImgsList.length * 15}s`;
                 width={1920}
                 height={1080}
                 class="absolute inset-0 h-full w-full object-cover"
-                style={{ objectPosition: img.focalPoint }}
+                style={{ objectPosition: img.focalPoint ?? "center" }}
               />
             </li>
           ))}
@@ -118,7 +131,15 @@ const carouselAnimationTime = `${carouselImgsList.length * 15}s`;
     const styleElement = document.createElement("style");
     const carouselImgs = document.getElementById("carousel_imgs");
     const carouselImgsCount = carouselImgs?.children.length ?? 0;
-    const carouselAnimationTime = `${carouselImgsCount * 15}s`;
+
+    // read interval from data attribute (falls back to intervalSeconds used server-side)
+    const configuredInterval = Number(bannerElement?.dataset.carouselInterval) || 15;
+    const carouselAnimationTime = `${carouselImgsCount * configuredInterval}s`;
+
+    // ensure CSS variable is set so CSS animation matches JS timing
+    if (bannerElement) {
+      bannerElement.style.setProperty('--carouselAnimationTime', carouselAnimationTime);
+    }
 
     const carouselAnimation = `
       @keyframes carousel-animation {
@@ -137,15 +158,15 @@ const carouselAnimationTime = `${carouselImgsList.length * 15}s`;
 
     if (carouselImgs) {
       Array.from(carouselImgs.children).forEach((item, index) => {
-        (item as HTMLElement).style.animationDuration = carouselAnimationTime;
-        (item as HTMLElement).style.animationDelay = `${index * 15}s`;
+        (item).style.animationDuration = carouselAnimationTime;
+        (item).style.animationDelay = `${index * configuredInterval}s`;
       });
     }
 
     // Dynamic Text Logic
     const dynamicBannerTextDiv = document.getElementById("dynamic-banner-text");
     const bannerConfigData = bannerElement?.dataset.bannerConfig;
-    let carouselImgsList: Array<{ src?: string; focalPoint?: string; textLines?: string[] }> = [];
+    let carouselImgsList = [];
 
     if (bannerConfigData) {
       try {
@@ -155,9 +176,9 @@ const carouselAnimationTime = `${carouselImgsList.length * 15}s`;
       }
     }
 
-    const imageDisplayInterval = 15 * 1000;
+    const imageDisplayInterval = configuredInterval * 1000;
 
-    function updateTextContent(index: number) {
+    function updateTextContent(index) {
       if (!dynamicBannerTextDiv || !carouselImgsList.length) return;
 
       dynamicBannerTextDiv.style.opacity = "0";
@@ -165,7 +186,7 @@ const carouselAnimationTime = `${carouselImgsList.length * 15}s`;
         dynamicBannerTextDiv.innerHTML = "";
         const currentImage = carouselImgsList[index];
         if (currentImage && currentImage.textLines) {
-          (currentImage.textLines ?? []).forEach((line: string, lineIndex: number) => {
+          (currentImage.textLines ?? []).forEach((line, lineIndex) => {
             const p = document.createElement("p");
             p.textContent = line;
             p.style.fontSize = lineIndex === 0
@@ -208,7 +229,7 @@ const carouselAnimationTime = `${carouselImgsList.length * 15}s`;
   }
 
   .carousel .item {
-    @apply absolute left-0 top-0 z-0 h-full w-full origin-center opacity-0; /* Removed bg-cover, bg-center, bg-no-repeat */
+    @apply absolute left-0 top-0 z-0 h-full w-full origin-center opacity-0;
     animation: carousel-animation var(--carouselAnimationTime) linear infinite 0s;
     backface-visibility: hidden;
     transform-style: preserve-3d;

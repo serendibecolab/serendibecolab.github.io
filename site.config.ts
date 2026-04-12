@@ -76,6 +76,11 @@ const SiteConfig: Configuration = {
   maxFooterCategoryChip: 6,
   maxFooterTagChip: 24,
 
+  // Global banner settings: number of seconds each banner image is displayed
+  bannerSettings: {
+    intervalSeconds: 15,
+  },
+
   banners: [
     {
       src: "/images/IMG-20251109-WA0004.jpg",
