@@ -1,52 +1,207 @@
 ---
-import YukinaConfig from "../../yukina.config";
+/**
+ * ImageGrid.astro
+ *
+ * Reads each image's actual pixel dimensions at build time (via Sharp), then
+ * uses a CSS sub-grid ruler technique (grid-auto-rows: 4 px) so every tile's
+ * height is exactly proportional to the image's natural aspect ratio.
+ *
+ * Column span is still driven by the `size` field in site.config.ts:
+ *   small  → 1 col
+ *   medium → 2 cols
+ *   large  → 2 cols on mobile / 4 cols on md+ screens
+ *
+ * An SSR-calculated grid-row-end is written into the HTML so there is no
+ * layout shift on first paint.  A ResizeObserver then keeps every tile
+ * perfectly proportioned as the viewport changes.
+ */
 
-interface ImageGridItem {
+import SiteConfig from "../../site.config";
+import sharp from "sharp";
+
+// ─── constants (must match the values used in the <style> block below) ────────
+const ROW_PX = 4;   // grid-auto-rows
+const GAP_PX = 16;  // gap-4
+
+// ─── types ────────────────────────────────────────────────────────────────────
+interface GridItem {
   src: string;
   alt: string;
   title: string;
   description: string;
   href?: string;
-  size: 'small' | 'medium' | 'large';
+  size: "small" | "medium" | "large";
 }
 
-const imageGridItems: ImageGridItem[] = YukinaConfig.homepageGridItems;
+interface GridItemResolved extends GridItem {
+  imgW: number;
+  imgH: number;
+  initSpan: number; // SSR row-span estimate (desktop)
+}
+
+// ─── helpers ──────────────────────────────────────────────────────────────────
+
+/** Convert a public-folder src like "/images/foo.webp" to an absolute path. */
+function srcToPath(src: string): string {
+  const publicBase = new URL("../../public/", import.meta.url);
+  return new URL(src.replace(/^\//, ""), publicBase).pathname;
+}
+
+/**
+ * Row span needed so the item's height matches the image's natural aspect ratio
+ * when the item is rendered at `colWidthPx` pixels wide.
+ */
+function rowSpan(imgW: number, imgH: number, colWidthPx: number): number {
+  const idealH = colWidthPx * (imgH / imgW);
+  return Math.max(10, Math.ceil((idealH + GAP_PX) / (ROW_PX + GAP_PX)));
+}
+
+// ─── desktop column-width estimates for SSR initial spans ─────────────────────
+// Container ≈ 1200 px wide, 6 columns, gap = 16 px → col ≈ 186 px
+const DESKTOP_COL_PX = (1200 - 5 * GAP_PX) / 6;
+const INIT_COL_W: Record<"small" | "medium" | "large", number> = {
+  small:  DESKTOP_COL_PX,
+  medium: DESKTOP_COL_PX * 2 + GAP_PX,
+  large:  DESKTOP_COL_PX * 4 + GAP_PX * 3,
+};
+
+// ─── Tailwind column-span classes per size ────────────────────────────────────
+const COL_CLASS: Record<"small" | "medium" | "large", string> = {
+  small:  "col-span-1",
+  medium: "col-span-2",
+  large:  "col-span-2 md:col-span-4",
+};
+
+// ─── resolve dimensions for every item at build time ─────────────────────────
+const items: GridItemResolved[] = await Promise.all(
+  (SiteConfig.homepageGridItems as GridItem[]).map(async (item) => {
+    let imgW = 800;
+    let imgH = 600;
+    try {
+      const meta = await sharp(srcToPath(item.src)).metadata();
+      imgW = meta.width  ?? 800;
+      imgH = meta.height ?? 600;
+    } catch {
+      // fall back to a sensible landscape default
+    }
+    return {
+      ...item,
+      imgW,
+      imgH,
+      initSpan: rowSpan(imgW, imgH, INIT_COL_W[item.size]),
+    };
+  })
+);
 ---
 
 <div class="container mx-auto px-4 py-8">
-  <h2 class="text-3xl font-bold text-center mb-8 text-[var(--subtitle-color)]">Featured Content</h2>
-  <div id="image-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 auto-rows-[minmax(150px,_250px)]">
-    {imageGridItems.map((item, index) => (
+  <h2 class="mb-8 text-center text-3xl font-bold text-[var(--subtitle-color)]">
+    Featured Content
+  </h2>
+
+  <!--
+    grid-auto-rows is set inline because Tailwind has no utility for an
+    arbitrary 4 px row height that also needs to be referenced in JS.
+  -->
+  <div
+    id="image-grid"
+    class="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6"
+    style="grid-auto-rows: 4px;"
+  >
+    {items.map((item) => (
       <a
-        href={item.href || '#'}
+        href={item.href ?? "#"}
         class:list={[
-          "block group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-500 ease-in-out",
-          item.size === 'medium' && 'sm:col-span-2 md:col-span-2 lg:col-span-2',
-          item.size === 'large' && 'sm:col-span-2 md:col-span-3 lg:col-span-4 sm:row-span-2',
+          "grid-item group relative overflow-hidden rounded-lg shadow-lg",
+          "hover:shadow-xl transition-shadow duration-300",
+          COL_CLASS[item.size],
         ]}
-        data-index={index}
+        style={`grid-row-end: span ${item.initSpan};`}
+        data-w={item.imgW}
+        data-h={item.imgH}
       >
+        {/* The image fills the full grid cell; object-fit covers any sub-pixel gap */}
         <img
           src={item.src}
           alt={item.alt}
-          class="w-full h-full object-cover absolute inset-0 transform group-hover:scale-105 transition-transform duration-500 ease-in-out"
+          loading="lazy"
+          decoding="async"
+          class="block h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <!-- Mobile: Always show title, Desktop: Show on hover -->
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:bg-gradient-to-t md:from-black md:via-black/50 md:to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 ease-in-out flex flex-col justify-end p-4">
-          <h3 class="text-white text-xl font-semibold mb-1">{item.title}</h3>
-          <p class="text-gray-300 text-sm md:block hidden">{item.description}</p>
+
+        {/* Desktop: hover overlay with title + description */}
+        <div
+          class="absolute inset-0 hidden flex-col justify-end bg-gradient-to-t
+                 from-black/75 via-black/20 to-transparent p-4
+                 opacity-0 transition-opacity duration-300
+                 group-hover:opacity-100 md:flex"
+        >
+          <h3 class="text-lg font-semibold leading-snug text-white">
+            {item.title}
+          </h3>
+          <p class="mt-1 line-clamp-2 text-sm text-gray-300">
+            {item.description}
+          </p>
+        </div>
+
+        {/* Mobile: always-visible title strip at bottom */}
+        <div
+          class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65
+                 to-transparent p-3 pt-10 md:hidden"
+        >
+          <h3 class="line-clamp-1 text-sm font-semibold leading-tight text-white">
+            {item.title}
+          </h3>
         </div>
       </a>
     ))}
   </div>
 </div>
 
-<style>
-  /* Ensure mobile visibility */
-  @media (max-width: 768px) {
-    #image-grid a .absolute > h3 {
-      opacity: 1 !important;
-      visibility: visible !important;
+<script>
+  // ── constants (must match the Astro frontmatter values) ──────────────────────
+  const ROW_PX = 4;
+  const GAP_PX = 16;
+
+  // ── core calculation ──────────────────────────────────────────────────────────
+  /**
+   * Given an item element with data-w / data-h attributes, compute the correct
+   * grid-row-end span so the tile height matches the image's natural aspect ratio
+   * at the item's current rendered width.
+   */
+  function computeSpan(el: HTMLElement): number {
+    const imgW = parseInt(el.dataset.w ?? "800");
+    const imgH = parseInt(el.dataset.h ?? "600");
+
+    // getBoundingClientRect().width reflects the actual column span applied by CSS,
+    // so we never need to replicate the column-span logic in JS.
+    const renderedW = el.getBoundingClientRect().width;
+    if (renderedW === 0) return 10; // element not yet painted
+
+    const idealH  = renderedW * (imgH / imgW);
+    return Math.max(10, Math.ceil((idealH + GAP_PX) / (ROW_PX + GAP_PX)));
+  }
+
+  // ── layout pass ──────────────────────────────────────────────────────────────
+  function recalcAll(): void {
+    const grid = document.getElementById("image-grid");
+    if (!grid) return;
+    for (const el of grid.querySelectorAll<HTMLElement>(".grid-item")) {
+      el.style.gridRowEnd = `span ${computeSpan(el)}`;
     }
   }
-</style>
+
+  // ── initialisation ───────────────────────────────────────────────────────────
+  function init(): void {
+    recalcAll();
+
+    // ResizeObserver fires whenever the grid container changes size — this covers
+    // window resizing, orientation changes, and the sidebar appearing/disappearing.
+    const grid = document.getElementById("image-grid");
+    if (grid) {
+      new ResizeObserver(() => { recalcAll(); }).observe(grid);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+</script>

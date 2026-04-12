@@ -1,19 +1,21 @@
 ---
-title: HIIII
-description: >-
-  This is a longer description for Grid Item 1, demonstrating how content from
-coverImage: "/images/IMG-20251109-WA0004.jpg"
+title: Coral Reef Monitoring
+description: Health assessments and species mapping of Sri Lanka's coral reef systems.
+coverImage: "/images/IMG_7115.webp"
 imageLoop:
   - "/images/IMG_7115.webp"
   - "/images/IMG_7116.webp"
   - "/images/IMG_7119.webp"
-  - "/images/IMG_6519.webp"
 ---
-# Grid Item 3
 
-This is the detailed content for **Grid Item 3**. You can put any markdown content here, including images, links, and more.
+# Coral Reef Monitoring — Sri Lanka's Coastal Waters
 
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Sri Lanka's coastal waters support diverse coral reef ecosystems that are vital for fisheries, coastal protection, and marine biodiversity. Rising sea temperatures, pollution, and destructive fishing practices threaten these habitats. Our reef monitoring programme tracks coral cover, bleaching events, and fish community composition at sentinel sites around the island.
 
-![Example Image](https://via.placeholder.com/800x400/3357FF/FFFFFF?text=Image+inside+Markdown)
+## Methodology
 
+Trained dive teams conduct Belt Transect surveys following the Reef Check protocol. Benthic composition is recorded using point-intercept transects, while fish diversity is assessed using underwater visual census methods. Water quality parameters including temperature and pH are logged continuously at moored sensors.
+
+## Recent Results
+
+Bleaching events following the 2023 thermal anomaly affected up to 40% of live coral cover at shallow reef sites on the north-west coast. Recovery monitoring is ongoing, with hard coral recruits now visible at most affected sites.

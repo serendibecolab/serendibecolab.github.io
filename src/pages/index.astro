@@ -5,9 +5,9 @@ import Banner from "../components/Banner.astro";
 import SecondBanner from "../components/SecondBanner.astro";
 import ImageGrid from "../components/ImageGrid.astro";
 import ServiceCard from "../components/ServiceCard.astro";
-import YukinaConfig from "../../yukina.config";
+import SiteConfig from "../../site.config";
 import Footer from "../components/Footer.astro";
-import SideBar from "../components/SideBar.astro";
+
 ---
 
 <Base>
@@ -22,11 +22,11 @@ import SideBar from "../components/SideBar.astro";
       <div class="transition-leaving space-y-8 w-full mx-auto">
         <main class="content onload-animation">
           <ImageGrid />
-          
+
           <section class="container mx-auto px-4 py-8">
             <h2 class="text-3xl font-bold text-center mb-8 text-[var(--subtitle-color)]">Our Services</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {YukinaConfig.homepageServiceCards.map((service) => (
+              {SiteConfig.homepageServiceCards.map((service) => (
                 <ServiceCard
                   title={service.title}
                   description={service.description}
@@ -48,14 +48,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const mainBanner = document.querySelector('.banner'); // First banner
   const secondBanner = document.querySelector('#second-banner');
   let isScrolling = false;
-  let scrollTimeout;
+  let scrollTimeout: ReturnType<typeof setTimeout> | undefined;
 
   function isInMainBanner() {
     if (!mainBanner) return false;
-    
+
     const mainBannerRect = mainBanner.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
-    
+
     // Check if any part of main banner is visible in viewport
     return mainBannerRect.bottom > 0 && mainBannerRect.top < viewportHeight;
   }
@@ -63,11 +63,11 @@ document.addEventListener('DOMContentLoaded', function() {
   function scrollToSecondBanner() {
     if (secondBanner && !isScrolling) {
       isScrolling = true;
-      
+
       // Calculate the position to scroll to (top of second banner)
       const bannerRect = secondBanner.getBoundingClientRect();
       const offsetTop = window.pageYOffset + bannerRect.top;
-      
+
       // Smooth scroll to second banner
       window.scrollTo({
         top: offsetTop,
@@ -81,17 +81,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  function handleScroll(event) {
+  function handleScroll(event: WheelEvent) {
     // Clear any existing timeout
     clearTimeout(scrollTimeout);
-    
+
     // Only proceed if not currently scrolling programmatically
     if (isScrolling) return;
-    
+
     // Set a timeout to handle the scroll
     scrollTimeout = setTimeout(() => {
-      const currentScroll = window.pageYOffset;
-      
       // Check if we're in the main banner area and scrolling down
       if (isInMainBanner() && event.deltaY > 0) {
         // Prevent default to stop normal scrolling
@@ -101,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 50);
   }
 
-  function handleKeyDown(event) {
+  function handleKeyDown(event: KeyboardEvent) {
     // Snap on down arrow or page down key when in main banner
     if ((event.key === 'ArrowDown' || event.key === 'PageDown') && isInMainBanner()) {
       event.preventDefault();
@@ -112,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // For touch devices
   let startY = 0;
   let isTouchScrolling = false;
-  
+
   document.addEventListener('touchstart', function(event) {
     startY = event.touches[0].clientY;
     isTouchScrolling = true;
@@ -120,16 +118,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.addEventListener('touchmove', function(event) {
     if (!isTouchScrolling || isScrolling) return;
-    
+
     const currentY = event.touches[0].clientY;
     const deltaY = startY - currentY; // Positive means scrolling down
-    
+
     if (deltaY > 10 && isInMainBanner()) { // Minimum swipe distance
       event.preventDefault();
       scrollToSecondBanner();
       isTouchScrolling = false;
     }
-  });
+  }, { passive: false });
 
   document.addEventListener('touchend', function() {
     isTouchScrolling = false;
@@ -139,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (mainBanner && secondBanner) {
     window.addEventListener('wheel', handleScroll, { passive: false });
     window.addEventListener('keydown', handleKeyDown);
-    
+
     // Also handle scroll indicator click
     const scrollIndicator = document.querySelector('.banner .scroll-indicator');
     if (scrollIndicator) {

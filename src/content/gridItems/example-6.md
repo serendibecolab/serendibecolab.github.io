@@ -1,19 +1,21 @@
 ---
-title: HIIII
-description: >-
-  This is a longer description for Grid Item 1, demonstrating how content from
-coverImage: "/images/IMG-20251109-WA0004.jpg"
+title: Leopard Studies
+description: Population monitoring of the iconic Sri Lankan Leopard in Yala and beyond.
+coverImage: "/images/IMG_9069.webp"
 imageLoop:
-  - "/images/IMG_7115.webp"
-  - "/images/IMG_7116.webp"
-  - "/images/IMG_7119.webp"
-  - "/images/IMG_6519.webp"
+  - "/images/IMG_9069.webp"
+  - "/images/IMG_9070.webp"
+  - "/images/IMG_9071.webp"
 ---
-# Grid Item 6
 
-This is the detailed content for **Grid Item 6**. You can put any markdown content here, including images, links, and more.
+# Leopard Studies — Sri Lankan Leopard Population Monitoring
 
-Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur.
+The Sri Lankan Leopard (*Panthera pardus kotiya*) is an endemic subspecies and the apex predator of the island's ecosystems. With an estimated wild population of fewer than 1,000 individuals, the subspecies faces pressure from habitat loss, human–wildlife conflict, and road mortality. Our camera-trap network provides systematic population estimates and monitors individual home ranges and behaviour.
 
-![Example Image](https://via.placeholder.com/800x400/33FFFF/000000?text=Image+inside+Markdown)
+## Methodology
 
+A grid of 60 camera trap stations is maintained across Yala National Park and buffer zones. Individual leopards are identified by unique rosette patterns. Mark-recapture modelling (spatial capture-recapture) generates density and abundance estimates. Mortality records and conflict incidents are collected through a network of trained community reporters.
+
+## Outcomes
+
+Our population estimates feed directly into the Sri Lanka Leopard Conservation Action Plan. Community education programmes developed from conflict data have reduced retaliatory killings in three buffer-zone villages over the past two years.

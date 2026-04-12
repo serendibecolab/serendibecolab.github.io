@@ -24,7 +24,25 @@ interface Configuration {
   maxFooterCategoryChip: number;
   maxFooterTagChip: number;
 
-  banners: string[];
+  banners: { src: string; focalPoint: string; textLines: string[] }[];
+
+  secondBanners: { src: string; focalPoint: string; textLines: string[] }[];
+
+  homepageGridItems: {
+    src: string;
+    alt: string;
+    title: string;
+    description: string;
+    href?: string;
+    size: "small" | "medium" | "large";
+  }[];
+
+  homepageServiceCards: {
+    title: string;
+    description: string;
+    coverImage: string;
+    href: string;
+  }[];
 
   slugMode: "HASH" | "RAW";
 

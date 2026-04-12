@@ -3,7 +3,7 @@ import Base from "./BaseLayout.astro";
 import NavBar from "../components/NavBar.astro";
 import Banner from "../components/Banner.astro";
 
-import YukinaConfig from "../../yukina.config";
+
 import Footer from "../components/Footer.astro";
 import SideBar from "../components/SideBar.astro";
 
@@ -11,6 +11,7 @@ export interface Props {
   title?: string;
   subTitle?: string;
   bannerImage?: string;
+  bannerImageLoop?: { src: string; focalPoint: string }[];
   slug?: string;
   showAvatar?: boolean;
   showCategoriesAndTags?: boolean;
@@ -22,14 +23,14 @@ const { showAvatar = true, showCategoriesAndTags = true } = props;
 const isSidebarActive = showAvatar || showCategoriesAndTags;
 ---
 
-<Base>
+<Base title={props.title}>
   <NavBar />
 
   <!-- Main banner for other pages -->
   <Banner
     title={props.title}
     subTitle={props.subTitle}
-    slug={props.slug}
+    bannerImageLoop={props.bannerImageLoop}
     {...(props.bannerImage && { coverImage: { src: props.bannerImage, alt: props.title || "Cover Image" } })}
   />
 

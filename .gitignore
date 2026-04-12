@@ -1,1 +1,60 @@
+# Build output
 dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Binary archives and executables
+*.tgz
+*.tar.gz
+*.zip
+*.gz
+*.exe
+*.bin
+
+# Pagefind search index (generated at build time)
+public/pagefind/
+
+# Deployment artifacts
+deploy.log
+git-watcher.log
+health-check.log
+
+# Systemd / system service files (should not be in web repo)
+*.service
+
+# TypeScript cache
+*.tsbuildinfo

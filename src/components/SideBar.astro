@@ -1,9 +1,10 @@
 ---
 import { Icon } from "astro-icon/components";
-import YukinaConfig from "../../yukina.config";
+import SiteConfig from "../../site.config";
 import I18nKeys from "../locales/keys";
 import { i18n } from "../locales/translation";
 import { GetCategories, GetTags } from "../utils/content";
+
 import SocialIcon from "./widgets/SocialIcon.astro";
 
 const tags = await GetTags();
@@ -11,7 +12,7 @@ const categories = await GetCategories();
 
 const categoryKeys = [...categories.keys()];
 const tagKeys = [...tags.keys()];
-const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
+
 ---
 
 <div class="flex w-full flex-row justify-center">
@@ -22,22 +23,22 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
     >
       <a href={new URL("/about", Astro.site).pathname} class="avatar-wrapper">
         <img
-          src={new URL(YukinaConfig.avatarUrl, Astro.site).pathname}
+          src={new URL(SiteConfig.avatarUrl, Astro.site).pathname}
           alt="avatar"
           class="avatar lozad select-none"
         />
       </a>
       <div class="username mt-4">
-        <p>{YukinaConfig.username}</p>
+        <p>{SiteConfig.username}</p>
       </div>
       <p class="slogan mt-2 text-center text-[var(--text-color-lighten)]">
-        {YukinaConfig.sign}
+        {SiteConfig.sign}
       </p>
       {
-        YukinaConfig.socialLinks.length > 0 && (
+        SiteConfig.socialLinks.length > 0 && (
           <div class="mt-1 flex flex-row justify-center">
             <div class="flex w-[184px] flex-wrap justify-center gap-2">
-              {YukinaConfig.socialLinks.map((item) => (
+              {SiteConfig.socialLinks.map((item) => (
                 <SocialIcon name={item.icon} link={item.link} />
               ))}
             </div>
@@ -63,7 +64,7 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
           </div>
           <div class="relative flex flex-col">
             {categoryKeys
-              .slice(0, YukinaConfig.maxSidebarCategoryChip + 1)
+              .slice(0, SiteConfig.maxSidebarCategoryChip + 1)
               .map((category) => (
                 <a
                   href={new URL(`/categories/${category}`, Astro.site).pathname}
@@ -77,7 +78,7 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
                   </span>
                 </a>
               ))}
-            {categoryKeys.length >= YukinaConfig.maxSidebarCategoryChip + 1 && (
+            {categoryKeys.length >= SiteConfig.maxSidebarCategoryChip + 1 && (
               <div class="absolute bottom-0 flex h-11 w-full flex-row items-center justify-center bg-gradient-to-t from-[var(--card-color)] from-25% to-transparent backdrop-blur-sm">
                 <a
                   href={new URL("/categories/", Astro.site).pathname}
@@ -109,7 +110,7 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
             </a>
           </div>
           <div class="relative flex max-w-[224px] flex-row flex-wrap">
-            {tagKeys.slice(0, YukinaConfig.maxSidebarTagChip + 1).map((tag) => (
+            {tagKeys.slice(0, SiteConfig.maxSidebarTagChip + 1).map((tag) => (
               <a
                 href={new URL(`/tags/${tag}`, Astro.site).pathname}
                 class="tag m-1 grow rounded-md bg-[var(--primary-color-lighten)] px-2 py-1 transition-all hover:brightness-95"
@@ -119,7 +120,7 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
                 </p>
               </a>
             ))}
-            {tagKeys.length >= YukinaConfig.maxSidebarCategoryChip + 1 && (
+            {tagKeys.length >= SiteConfig.maxSidebarCategoryChip + 1 && (
               <div class="absolute bottom-0 flex h-10 w-full flex-row items-center justify-center bg-gradient-to-t from-[var(--card-color)] from-25% to-transparent backdrop-blur-sm">
                 <a
                   href={new URL("/tags/", Astro.site).pathname}

@@ -5,7 +5,7 @@ description: This post demonstrates how to include embedded video in a blog post
 tags: [Example, Video]
 category: Examples
 cover: /images/IMG_7115.webp
-draft: false
+draft: true
 ---
 
 Just copy the embed code from YouTube or other platforms, and paste it in the markdown file.

@@ -1,94 +1,89 @@
-# Yukina
+# Serendib Eco Lab — Website
 
-Simple and Elegant Astro Blog Template
+Official website for **Serendib Eco Lab**, an ecological research organisation based in Sri Lanka dedicated to the scientific study and conservation of the island's extraordinary biodiversity.
 
-![Preview](https://s2.loli.net/2025/01/26/S4URrsj9TFgOKAp.webp)
+🌐 **Live site:** <https://serendibecolab.github.io>
 
-[中文](https://github.com/WhitePaper233/yukina/blob/main/README_zh.md)
+---
 
-## Demo Preview Links
+## About
 
-[🖥️ Live Demo (Vercel)](https://yukina-blog.vercel.app) |
-[🖥️ WhitePaper233's Blog (possibly not the latest version)](https://whitepaper233.top/)
+"Serendib" is the ancient Arabic name for Sri Lanka — a land of remarkable endemic wildlife, tropical rainforests, wetlands, and coral reefs. Serendib Eco Lab conducts ecological field surveys, biodiversity assessments, environmental impact studies, and community education programmes across the island's diverse ecosystems.
 
-## 🛠️ Build Guide
+---
 
-### 1. Install Node.js version 22 or above
+## Development
 
-Go to the [Node.js official website](https://nodejs.org/) to download and install the latest version of Node.js.
+### Prerequisites
 
-### 2. Enable Corepack
+- [Node.js](https://nodejs.org/) v22 or above
+- pnpm (via Corepack)
 
-```bash
+```serendibecolab.github.io/README.md#L1-1
 corepack enable
-```
-
-### 3. Install pnpm
-
-```bash
 corepack enable pnpm
 ```
 
-### 4. Install Dependencies
+### Setup
 
-```bash
+```serendibecolab.github.io/README.md#L1-1
 pnpm install
 ```
 
-### 5. Build Search Index
+### Commands
 
-```bash
-pnpm build
+| Command | Description |
+|---|---|
+| `pnpm dev` | Start local dev server at `localhost:4321` |
+| `pnpm build` | Build the production site to `dist/` |
+| `pnpm preview` | Preview the production build locally |
+| `pnpm astro check` | Run TypeScript diagnostics across all `.astro` files |
+
+---
+
+## Content
+
+All site content lives in `src/content/`:
+
+| Folder | Purpose |
+|---|---|
+| `posts/` | Blog posts — Markdown with YAML frontmatter |
+| `services/` | Research & service pages |
+| `gridItems/` | Homepage featured content grid |
+| `specs/` | Static pages (About) |
+
+### Adding a blog post
+
+Create a new `.md` file in `src/content/posts/` with the following frontmatter:
+
+```serendibecolab.github.io/README.md#L1-1
+---
+title: Your Post Title
+published: 2025-06-01
+description: A short summary shown in listing pages.
+tags: [Sri Lanka, Ecology]
+category: Research
+cover: /images/your-cover-image.webp
+draft: false
+---
+
+Post content goes here.
 ```
 
-### 6. Start Development Server
+### Site configuration
 
-```bash
-pnpm dev
-```
+Global configuration — site title, navigation links, banner images, social links, service cards, and homepage grid items — is managed in **`site.config.ts`** in the project root.
 
-### 7. Build Project
+---
 
-```bash
-pnpm build
-```
+## Deployment
 
-### 8. Preview Project
+The site is automatically deployed to [GitHub Pages](https://pages.github.com/) on every push to the `main` branch via the GitHub Actions workflow defined in `.github/workflows/astro.yml`.
 
-```bash
-pnpm preview
-```
+To trigger a manual deployment, push to `main` or run the workflow from the **Actions** tab on GitHub.
 
-## 🗺️ Roadmap
+---
 
-### Recent
+## Licence
 
-✅ - Completed | 🧪 - In Testing | 🚧 - In Progress | ⏳ - Planned
-
-| Status | Project                                             |
-| ------ | --------------------------------------------------- |
-| 🧪     | Basic feature implementation                        |
-| 🧪     | Refactoring some code, optimizing overall structure |
-| 🧪     | Optimizing animation effects                        |
-| 🧪     | Mobile adaptation                                   |
-| 🚧     | Optimizing website performance                      |
-| 🧪     | Adjustable colors                                   |
-| 🧪     | Adding RSS, SiteMap, and other features             |
-| 🧪     | More build options (e.g., SLUG generation methods)  |
-| ⏳     | Adding Live2D character                             |
-| 🧪     | Search functionality                                |
-| 🧪     | i18n                                                |
-
-### Long-term
-
-| Status | Project                                        |
-| ------ | ---------------------------------------------- |
-| ⏳     | Developing an easy-to-manage CLI and small CMS |
-| ⏳     | Slidev components                              |
-| ⏳     | More Markdown components                       |
-
-## 🙏 Special Thanks
-
-- [Hexo Shoka Theme](https://github.com/amehime/hexo-theme-shoka) for providing design ideas
-
-- [Astro Fuwari Template](https://github.com/saicaca/fuwari) for providing the main design ideas and some code implementations
+Content © Serendib Eco Lab. All rights reserved.

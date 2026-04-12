@@ -1,48 +1,55 @@
 ---
-import YukinaConfig from "../../yukina.config";
+import SiteConfig from "../../site.config";
 import GlobalStyles from "./GlobalStyles.astro";
 import ScriptSetup from "./ScriptSetup.astro";
+import { safePath } from "../utils/path";
 
-const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
+export interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+
 const canonicalURL = new URL(safePath(Astro.url.pathname), Astro.site);
 // Use Astro.site as the base so assets and discovery links respect the site/base configured in astro.config
 const faviconHref = new URL(safePath("/favicon.svg"), Astro.site);
 const sitemapHref = new URL(safePath("/sitemap-index.xml"), Astro.site);
+const pageTitle = title ? `${title} | ${SiteConfig.title}` : SiteConfig.title;
+const defaultOgImage = new URL(safePath("/images/IMG-20251109-WA0004.jpg"), Astro.site);
 ---
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href={faviconHref} />
-<meta name="generator" content={Astro.generator} />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
 <!-- Primary Meta Tags -->
-<title>{YukinaConfig.title}</title>
-<meta name="title" content={YukinaConfig.title} />
-<meta name="description" content={YukinaConfig.description} />
+<title>{pageTitle}</title>
+<meta name="title" content={pageTitle} />
+<meta name="description" content={SiteConfig.description} />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content={Astro.url} />
-<meta property="og:title" content={YukinaConfig.title} />
-<meta property="og:description" content={YukinaConfig.description} />
-<!-- <meta property="og:image" content={new URL(image, Astro.url)} /> -->
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={SiteConfig.description} />
+<meta property="og:image" content={defaultOgImage} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={YukinaConfig.title} />
-<meta property="twitter:description" content={YukinaConfig.description} />
-<!-- <meta property="twitter:image" content={new URL(image, Astro.url)} /> -->
+<meta property="twitter:title" content={pageTitle} />
+<meta property="twitter:description" content={SiteConfig.description} />
+<meta property="twitter:image" content={defaultOgImage} />
 
 <!-- RSS AutoDiscovery -->
 <link
   rel="alternate"
   type="application/rss+xml"
-  title={YukinaConfig.title}
+  title={SiteConfig.title}
   href={new URL(safePath("rss.xml"), Astro.site)}
 />
 

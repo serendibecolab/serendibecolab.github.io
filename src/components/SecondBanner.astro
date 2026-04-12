@@ -1,16 +1,15 @@
---- 
-import YukinaConfig from "../../yukina.config";
+---
+import SiteConfig from "../../site.config";
 import { Image } from "astro:assets";
 
 export interface Props {
   title?: string;
   subTitle?: string;
-  slug?: string;
 }
 
-const { title, subTitle, slug } = Astro.props;
+// Props are accepted but not used in template rendering
 
-let carouselImgsList = YukinaConfig.secondBanners;
+let carouselImgsList = SiteConfig.secondBanners;
 const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
 ---
 
@@ -76,15 +75,15 @@ const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
 
     if (carouselImgs) {
       Array.from(carouselImgs.children).forEach((item, index) => {
-        item.style.animationDuration = carouselAnimationTime;
-        item.style.animationDelay = `${index * 10}s`;
+        (item as HTMLElement).style.animationDuration = carouselAnimationTime;
+        (item as HTMLElement).style.animationDelay = `${index * 15}s`;
       });
     }
 
     // Dynamic Text Logic
     const dynamicBannerTextDiv = document.getElementById("second-dynamic-banner-text");
     const bannerConfigData = bannerElement?.dataset.bannerConfig;
-    let carouselImgsList = [];
+    let carouselImgsList: Array<{ src?: string; focalPoint?: string; textLines?: string[] }> = [];
 
     if (bannerConfigData) {
       try {
@@ -94,9 +93,9 @@ const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
       }
     }
 
-    const imageDisplayInterval = 10 * 1000;
+    const imageDisplayInterval = 15 * 1000;
 
-    function updateTextContent(index) {
+    function updateTextContent(index: number) {
       if (!dynamicBannerTextDiv || !carouselImgsList.length) return;
 
       dynamicBannerTextDiv.style.opacity = "0";
@@ -104,7 +103,7 @@ const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
         dynamicBannerTextDiv.innerHTML = "";
         const currentImage = carouselImgsList[index];
         if (currentImage && currentImage.textLines) {
-          currentImage.textLines.forEach((line, lineIndex) => {
+          (currentImage.textLines ?? []).forEach((line: string, lineIndex: number) => {
             const p = document.createElement("p");
             p.textContent = line;
             p.style.fontSize = lineIndex === 0

@@ -1,14 +1,14 @@
 ---
-import YukinaConfig from "../../yukina.config";
+import SiteConfig from "../../site.config";
 import { i18n } from "../locales/translation";
 
 import { Icon } from "astro-icon/components";
 import SearchBar from "./SearchBar.svelte";
 import MobileSearchBar from "./MobileSearchBar.svelte";
 import "astro-pagefind";
+import { safePath } from "../utils/path";
 
-const navCount = YukinaConfig.navigators.length;
-const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
+const navCount = SiteConfig.navigators.length;
 ---
 
 <nav class="nav" id="nav">
@@ -35,18 +35,18 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
         />
       </button>
       <a class="title" href={new URL(safePath("/"), Astro.site).pathname}>
-        {YukinaConfig.brandTitle}
+        {SiteConfig.brandTitle}
       </a>
     </div>
     <a class="brand-lg" href={new URL(safePath("/"), Astro.site).pathname}>
       <div class="title space-x-2">
         <Icon name="heroicons:home" size={32} />
-        <p>{YukinaConfig.brandTitle}</p>
+        <p>{SiteConfig.brandTitle}</p>
       </div>
     </a>
     <div class="menu">
       {
-        YukinaConfig.navigators.map((nav) => (
+        SiteConfig.navigators.map((nav) => (
           <a href={new URL(safePath(nav.href), Astro.site).pathname}>
             <p>{i18n(nav.nameKey)}</p>
           </a>
@@ -68,7 +68,7 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
       class="mobile-menu-nav mobile-menu-nav-closed flex flex-col space-y-6 overflow-hidden text-xl font-medium text-[var(--text-color)] transition-all duration-300"
     >
       {
-        YukinaConfig.navigators.map((nav) => (
+        SiteConfig.navigators.map((nav) => (
           <li class="mt-1">
             <a
               href={new URL(safePath(nav.href), Astro.site).pathname}

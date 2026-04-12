@@ -1,6 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
-import YukinaConfig from "../../yukina.config";
+import SiteConfig from "../../site.config";
 import { i18n } from "../locales/translation";
 import I18nKeys from "../locales/keys";
 import { GetCategories, GetTags } from "../utils/content";
@@ -10,7 +10,7 @@ const tags = await GetTags();
 
 const categoryKeys = [...categories.keys()];
 const tagKeys = [...tags.keys()];
-const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
+
 ---
 
 <div class="mx-3 space-y-4">
@@ -20,7 +20,7 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
       <a href={new URL("/about", Astro.site).pathname} class="relative h-40 w-40 md:hidden">
         <img
           class="lozad absolute left-0 top-0 h-40 rounded-l-3xl"
-          data-src={new URL(YukinaConfig.avatarUrl, Astro.site).pathname}
+          data-src={new URL(SiteConfig.avatarUrl, Astro.site).pathname}
           alt="Avatar"
         />
         <div
@@ -33,7 +33,7 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
       >
         <img
           class="lozad h-40 rounded-3xl"
-          data-src={new URL(YukinaConfig.avatarUrl, Astro.site).pathname}
+          data-src={new URL(SiteConfig.avatarUrl, Astro.site).pathname}
           alt="Avatar"
         />
       </a>
@@ -43,17 +43,17 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
             href={new URL("/about", Astro.site).pathname}
             class="line-clamp-1 text-xl font-semibold text-[var(--text-color)]"
           >
-            {YukinaConfig.username}
+            {SiteConfig.username}
           </a>
           <span class="mb-2 mt-1 h-1 w-8 rounded-full bg-[var(--primary-color)]"
           ></span>
           <p class="line-clamp-1 text-[var(--text-color-lighten)]">
-            {YukinaConfig.sign}
+            {SiteConfig.sign}
           </p>
         </div>
         <ul class="flex flex-row items-center justify-center space-x-6">
           {
-            YukinaConfig.socialLinks.map((item) => (
+            SiteConfig.socialLinks.map((item) => (
               <li>
                 <a href={item.link} class="text-[var(--primary-color)]">
                   <Icon name={item.icon} size={24} />
@@ -77,7 +77,7 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
     <div class="relative grid grid-cols-2 gap-1 md:grid-cols-3">
       {
         categoryKeys
-          .slice(0, YukinaConfig.maxFooterCategoryChip)
+          .slice(0, SiteConfig.maxFooterCategoryChip)
           .map((category) => (
             <a
               href={new URL(`/categories/${category}`, Astro.site).pathname}
@@ -93,22 +93,22 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
           ))
       }
       {
-        categoryKeys.length > YukinaConfig.maxFooterCategoryChip && (
+        categoryKeys.length > SiteConfig.maxFooterCategoryChip && (
           <a
-            href={new URL(`/categories/${categoryKeys[YukinaConfig.maxFooterCategoryChip]}`, Astro.site).pathname}
+            href={new URL(`/categories/${categoryKeys[SiteConfig.maxFooterCategoryChip]}`, Astro.site).pathname}
             class="category col-span-2 flex flex-row items-center justify-between rounded-lg px-2 py-1.5 transition-all hover:bg-[var(--primary-color-lighten)] md:col-span-3"
           >
             <p class="line-clamp-1 text-[var(--text-color)] transition-all">
               {
                 categories.get(
-                  categoryKeys[YukinaConfig.maxFooterCategoryChip],
+                  categoryKeys[SiteConfig.maxFooterCategoryChip],
                 )!.name
               }
             </p>
             <span class="rounded-md bg-[var(--primary-color-lighten)] px-2.5 py-0.5 text-[var(--primary-color)]">
               {
                 categories.get(
-                  categoryKeys[YukinaConfig.maxFooterCategoryChip],
+                  categoryKeys[SiteConfig.maxFooterCategoryChip],
                 )!.posts.length
               }
             </span>
@@ -137,7 +137,7 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
     </div>
     <div class="relative flex flex-row flex-wrap">
       {
-        tagKeys.slice(0, YukinaConfig.maxFooterTagChip + 1).map((tag) => (
+        tagKeys.slice(0, SiteConfig.maxFooterTagChip + 1).map((tag) => (
           <a
             href={new URL(`/tags/${tag}`, Astro.site).pathname}
             class="tag m-1 rounded-md bg-[var(--primary-color-lighten)] px-2 py-1 transition-all hover:brightness-95"
@@ -149,7 +149,7 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
         ))
       }
       {
-        tagKeys.length >= YukinaConfig.maxFooterCategoryChip + 1 && (
+        tagKeys.length >= SiteConfig.maxFooterCategoryChip + 1 && (
           <div class="absolute bottom-0 flex h-10 w-full flex-row items-center justify-center bg-gradient-to-t from-[var(--card-color)] from-25% to-transparent backdrop-blur-sm">
             <a
               href={new URL("/tags/", Astro.site).pathname}
@@ -177,13 +177,9 @@ const safePath = (p) => p?.toString().replace(/^\/+/, "") || "";
     >
       <p>
         © {new Date().getFullYear()}
-        {YukinaConfig.username} All Rights Reserved.
+        {SiteConfig.username} All Rights Reserved.
       </p>
       <p>Built with <a class="link" href="https://astro.build/">Astro</a></p>
-      <p>
-        Built by <a class="link" href="https://github.com/btechioi/">BTechIOI</a
-        >
-      </p>
     </div>
   </footer>
 </div>

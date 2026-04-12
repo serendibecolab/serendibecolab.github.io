@@ -12,7 +12,6 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import remarkMath from "remark-math";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
-import YukinaConfig from "./yukina.config";
 import pagefind from "astro-pagefind";
 
 // https://astro.build/config
@@ -41,23 +40,6 @@ export default defineConfig({
         mdi: ["*"],
       },
     }),
-    // Temporarily remove swup to test if it's the cause
-    // swup({
-    //   theme: false,
-    //   containers: ["main", "footer", ".banner-inner"],
-    //   smoothScrolling: true,
-    //   progress: true,
-    //   cache: true,
-    //   preload: true,
-    //   updateHead: true,
-    //   updateBodyClass: false,
-    //   globalInstance: true,
-    //   scroll: {
-    //     enabled: true,
-    //     offset: 800,
-    //   },
-    //   doScrollingRightAfterAnimation: true,
-    // }),
     sitemap(),
     pagefind(),
   ],
