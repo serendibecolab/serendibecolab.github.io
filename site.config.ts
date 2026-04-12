@@ -49,6 +49,24 @@ const SiteConfig: Configuration = {
       link: "mailto:info@serendibecolab.com",
     },
   ],
+
+  // Booking configuration: makes the booking list and contact email configurable site-wide.
+  // - contactEmail: email used across booking pages / widgets
+  // - showBookingList: whether to display a bookings list widget by default
+  // - bookingListSource: optional path or key to source booking entries (can be a content collection or API key)
+  // - bookingListTitle: title displayed for booking list widgets
+  // - bookingDefaults: defaults (e.g., visibility, initial items) that the UI may read from
+  booking: {
+    contactEmail: "info@serendibecolab.com",
+    showBookingList: false,
+    bookingListSource: "", // e.g. 'content/bookings' or leave empty to manage manually
+    bookingListTitle: "Bookings",
+    bookingDefaults: {
+      // Example structure for initial/default bookings (kept empty by default)
+      items: [] as any[],
+    },
+  },
+
   maxSidebarCategoryChip: 6,
   maxSidebarTagChip: 12,
   maxFooterCategoryChip: 6,

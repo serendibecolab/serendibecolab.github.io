@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config";
+import netlify from "@astrojs/netlify";
 
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
@@ -23,8 +24,9 @@ const BASE_PATH = isUserPage ? "/" : "/";
 
 export default defineConfig({
   base: BASE_PATH,
-  site: "https://serendibecolab.github.io",
+  site: "https://serendibecolabs.netlify.app",
   output: "static",
+  adapter: netlify(),
   image: {
     service: {
       entrypoint: "astro/assets/services/sharp",

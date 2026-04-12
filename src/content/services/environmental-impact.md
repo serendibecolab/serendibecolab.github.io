@@ -13,6 +13,10 @@ imageLoop:
 
 Development projects in Sri Lanka's ecologically sensitive landscapes require thorough environmental impact assessment (EIA) to meet regulatory requirements and achieve responsible outcomes. Serendib Eco Lab provides independent, scientifically credible EIA services for a range of project types.
 
+We also offer unique opportunities for the public, students, and professionals to join our environmental impact fieldwork through guided tours, research trips, and wildlife photography experiences. Capture the process of environmental assessment in action and learn from our expert team in the field.
+
+**Booking is available** for our fieldwork tours and expeditions—contact us or visit our booking page to participate.
+
 ## Services Offered
 
 - **Scoping and terms of reference development** for proposed projects
@@ -24,3 +28,5 @@ Development projects in Sri Lanka's ecologically sensitive landscapes require th
 ## Project Types
 
 We have experience with road and highway projects, hydropower and irrigation infrastructure, tourism developments, agricultural expansion, and industrial facilities. Our assessments are prepared to meet both national CEA requirements and international standards such as IFC Performance Standards.
+
+Ready to experience environmental science in action? Book your spot on a research trip, guided tour, or wildlife photography expedition with Serendib Eco Lab today!

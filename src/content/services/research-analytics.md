@@ -13,6 +13,10 @@ imageLoop:
 
 Raw field data is only as valuable as the analysis behind it. Serendib Eco Lab has in-house expertise in ecological statistics, remote sensing, GIS mapping, and database management to transform complex datasets into clear, actionable insights.
 
+We invite you to join our research and data analysis projects through immersive wildlife photography tours, guided research trips, and hands-on field experiences. Capture the excitement of scientific discovery and learn advanced techniques in ecological research and data interpretation alongside our team.
+
+**Booking is available** for our research expeditions, tours, and photography experiences—contact us or visit our booking page to participate.
+
 ## Capabilities
 
 - **Population modelling**: Occupancy models, distance sampling, and mark-recapture analyses using R and PRESENCE
@@ -24,3 +28,5 @@ Raw field data is only as valuable as the analysis behind it. Serendib Eco Lab h
 ## Collaboration
 
 We welcome research collaborations with universities, international conservation organisations, and government agencies. We can participate as full research partners, provide analytical services, or supply long-term datasets for meta-analyses and synthesis projects.
+
+Ready to experience research in action? Book your place on a wildlife photography tour, research trip, or guided expedition with Serendib Eco Lab today!
