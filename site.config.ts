@@ -30,6 +30,10 @@ const SiteConfig: Configuration = {
       nameKey: I18nKeys.nav_bar_about,
       href: "/about",
     },
+    {
+      nameKey: I18nKeys.nav_bar_booking,
+      href: "/booking",
+    },
   ],
 
   username: "Serendib Eco Lab",

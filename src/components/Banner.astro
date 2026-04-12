@@ -18,7 +18,7 @@ const hasTitle = title !== undefined || subTitle !== undefined;
 let carouselImgsList = (bannerImageLoop && bannerImageLoop.length > 0)
   ? bannerImageLoop
   : SiteConfig.banners;
-const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
+const carouselAnimationTime = `${carouselImgsList.length * 15}s`;
 ---
 
 <div id="banner" class="banner relative z-10" { ...coverImage ? {} : { 'data-banner-config': JSON.stringify(carouselImgsList) } }>
@@ -40,7 +40,7 @@ const carouselAnimationTime = `${carouselImgsList.length * 10}s`;
             <li
               class="item"
               style={{
-                animationDelay: `${index * 10}s`,
+                animationDelay: `${index * 15}s`,
               }}
             >
               <Image
