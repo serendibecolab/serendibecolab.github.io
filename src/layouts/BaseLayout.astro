@@ -12,7 +12,7 @@ export interface Props {
 const { title, description, image, type } = Astro.props;
 ---
 
-<html lang={SiteConfig.locale} class="dark">
+<html lang={SiteConfig.locale}>
   <BaseHead title={title} description={description} image={image} type={type} />
   <body class="overflow-y-hidden" style="background-color: var(--background-color);">
     <div class="falling-elements-container">
