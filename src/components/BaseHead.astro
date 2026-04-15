@@ -20,15 +20,23 @@ const pageTitle = title ? `${title} | ${SiteConfig.title}` : SiteConfig.title;
 const pageDescription = description ?? SiteConfig.description;
 const ogImage = image 
   ? new URL(safePath(image), Astro.site)
-  : new URL(safePath("/images/IMG-20251109-WA0004.jpg"), Astro.site);
+  : new URL(safePath("/images/IMG-20251109-WA0004.webp"), Astro.site);
 const currentPath = Astro.url.pathname;
 const isHome = currentPath === "/" || currentPath === "";
 ---
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#2d5a27" />
+<meta name="format-detection" content="telephone=no" />
 <link rel="icon" type="image/svg+xml" href={faviconHref} />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />

@@ -13,7 +13,7 @@ const { title, description, coverImage, href } = Astro.props;
 
 <a href={href} class="service-card block group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out p-8 text-center aspect-square flex flex-col justify-end">
   <div class="absolute inset-0">
-    <Image src={coverImage} alt={title} width={400} height={400} class="w-full h-full object-cover rounded-lg" />
+    <Image src={coverImage} alt={title} width={400} height={400} class="w-full h-full object-cover rounded-lg" loading="lazy" decoding="async" />
     <div class="absolute inset-0 bg-black opacity-40 group-hover:opacity-60 transition-opacity duration-300"></div>
   </div>
   <div class="relative z-10 text-white">

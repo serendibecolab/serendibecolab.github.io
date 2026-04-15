@@ -83,7 +83,7 @@ const SiteConfig: Configuration = {
 
   banners: [
     {
-      src: "/images/IMG-20251109-WA0004.jpg",
+      src: "/images/IMG-20251109-WA0004.webp",
       focalPoint: "center",
       textLines: [
         "Serendib Eco Lab",
@@ -93,7 +93,7 @@ const SiteConfig: Configuration = {
       ],
     },
     {
-      src: "/images/IMG-20251109-WA0005.jpg",
+      src: "/images/IMG-20251109-WA0005.webp",
       focalPoint: "center",
       textLines: [
         "Rainforest Expeditions",
@@ -103,7 +103,7 @@ const SiteConfig: Configuration = {
       ],
     },
     {
-      src: "/images/IMG-20251109-WA0006.jpg",
+      src: "/images/IMG-20251109-WA0006.webp",
       focalPoint: "center",
       textLines: [
         "Field Research",
@@ -113,7 +113,7 @@ const SiteConfig: Configuration = {
       ],
     },
     {
-      src: "/images/IMG-20251109-WA0007.jpg",
+      src: "/images/IMG-20251109-WA0007.webp",
       focalPoint: "center",
       textLines: [
         "Wildlife Monitoring",
@@ -123,7 +123,7 @@ const SiteConfig: Configuration = {
       ],
     },
     {
-      src: "/images/IMG-20251109-WA0008.jpg",
+      src: "/images/IMG-20251109-WA0008.webp",
       focalPoint: "center",
       textLines: [
         "Wetland Conservation",
@@ -133,7 +133,7 @@ const SiteConfig: Configuration = {
       ],
     },
     {
-      src: "/images/IMG-20251109-WA0009.jpg",
+      src: "/images/IMG-20251109-WA0009.webp",
       focalPoint: "center",
       textLines: [
         "Coastal Ecology",
@@ -276,42 +276,42 @@ const SiteConfig: Configuration = {
       title: "Ecological Field Surveys",
       description:
         "Comprehensive biodiversity surveys across Sri Lanka's diverse forest and wetland ecosystems.",
-      coverImage: "/images/IMG-20251109-WA0004.jpg",
+      coverImage: "/images/IMG-20251109-WA0004.webp",
       href: "/services/ecological-surveys",
     },
     {
       title: "Biodiversity Assessment",
       description:
         "Scientific assessment of species richness, ecosystem health, and population dynamics.",
-      coverImage: "/images/IMG-20251109-WA0005.jpg",
+      coverImage: "/images/IMG-20251109-WA0005.webp",
       href: "/services/biodiversity-assessment",
     },
     {
       title: "Environmental Impact Studies",
       description:
         "Rigorous environmental impact assessments for infrastructure and development projects.",
-      coverImage: "/images/IMG-20251109-WA0006.jpg",
+      coverImage: "/images/IMG-20251109-WA0006.webp",
       href: "/services/environmental-impact",
     },
     {
       title: "Conservation Planning",
       description:
         "Evidence-based strategies and action plans to protect Sri Lanka's critical natural habitats.",
-      coverImage: "/images/IMG-20251109-WA0007.jpg",
+      coverImage: "/images/IMG-20251109-WA0007.webp",
       href: "/services/conservation-planning",
     },
     {
       title: "Community Education",
       description:
         "Outreach programmes that engage local communities in conservation and sustainable practices.",
-      coverImage: "/images/IMG-20251109-WA0008.jpg",
+      coverImage: "/images/IMG-20251109-WA0008.webp",
       href: "/services/community-education",
     },
     {
       title: "Research & Data Analysis",
       description:
         "Data-driven insights from field research to support science-based conservation decisions.",
-      coverImage: "/images/IMG-20251109-WA0009.jpg",
+      coverImage: "/images/IMG-20251109-WA0009.webp",
       href: "/services/research-analytics",
     },
   ],

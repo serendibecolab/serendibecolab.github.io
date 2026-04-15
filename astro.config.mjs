@@ -31,6 +31,7 @@ export default defineConfig({
     service: {
       entrypoint: "astro/assets/services/sharp",
     },
+    domains: [],
   },
   integrations: [
     tailwind(),
@@ -64,8 +65,16 @@ export default defineConfig({
   scopedStyleStrategy: "where",
   vite: {
     build: {
-      assetsInlineLimit: 0,
+      assetsInlineLimit: 4096,
+      minify: "terser",
+      terserOptions: {
+        compress: {
+          drop_console: true,
+        },
+      },
     },
-    optimizeDeps: {},
+    optimizeDeps: {
+      include: ["react", "react-dom"],
+    },
   },
 });
