@@ -6,16 +6,23 @@ import { safePath } from "../utils/path";
 
 export interface Props {
   title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
 }
 
-const { title } = Astro.props;
+const { title, description, image, type = "website" } = Astro.props;
 
 const canonicalURL = new URL(safePath(Astro.url.pathname), Astro.site);
-// Use Astro.site as the base so assets and discovery links respect the site/base configured in astro.config
 const faviconHref = new URL(safePath("/favicon.svg"), Astro.site);
 const sitemapHref = new URL(safePath("/sitemap-index.xml"), Astro.site);
 const pageTitle = title ? `${title} | ${SiteConfig.title}` : SiteConfig.title;
-const defaultOgImage = new URL(safePath("/images/IMG-20251109-WA0004.jpg"), Astro.site);
+const pageDescription = description ?? SiteConfig.description;
+const ogImage = image 
+  ? new URL(safePath(image), Astro.site)
+  : new URL(safePath("/images/IMG-20251109-WA0004.jpg"), Astro.site);
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === "/" || currentPath === "";
 ---
 
 <!-- Global Metadata -->
@@ -29,21 +36,29 @@ const defaultOgImage = new URL(safePath("/images/IMG-20251109-WA0004.jpg"), Astr
 <!-- Primary Meta Tags -->
 <title>{pageTitle}</title>
 <meta name="title" content={pageTitle} />
-<meta name="description" content={SiteConfig.description} />
+<meta name="description" content={pageDescription} />
+<meta name="author" content={SiteConfig.username} />
+<meta name="robots" content={isHome ? "index, follow" : "index, follow"} />
+<meta name="googlebot" content="index, follow" />
+<meta name="theme-color" content="#2d5a27" />
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={pageTitle} />
-<meta property="og:description" content={SiteConfig.description} />
-<meta property="og:image" content={defaultOgImage} />
+<meta property="og:description" content={pageDescription} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content={SiteConfig.locale} />
+<meta property="og:site_name" content={SiteConfig.title} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
+<meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:title" content={pageTitle} />
-<meta property="twitter:description" content={SiteConfig.description} />
-<meta property="twitter:image" content={defaultOgImage} />
+<meta property="twitter:description" content={pageDescription} />
+<meta property="twitter:image" content={ogImage} />
 
 <!-- RSS AutoDiscovery -->
 <link
@@ -53,8 +68,34 @@ const defaultOgImage = new URL(safePath("/images/IMG-20251109-WA0004.jpg"), Astr
   href={new URL(safePath("rss.xml"), Astro.site)}
 />
 
-<!-- SiteMap -->
+<!-- Sitemap -->
 <link rel="sitemap" href={sitemapHref} />
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": SiteConfig.title,
+  "description": SiteConfig.description,
+  "url": SiteConfig.site,
+  "logo": new URL(safePath("/favicon.svg"), Astro.site).toString(),
+  "sameAs": SiteConfig.socialLinks?.map((s: { link: string }) => s.link) || [],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": SiteConfig.booking?.contactEmail,
+    "contactType": "customer service"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Sri Lanka"
+  },
+  "knowsAbout": [
+    "Ecological Research",
+    "Biodiversity Conservation",
+    "Wildlife Monitoring",
+    "Environmental Impact Assessment"
+  ]
+})} />
 
 <!-- CSS -->
 <link

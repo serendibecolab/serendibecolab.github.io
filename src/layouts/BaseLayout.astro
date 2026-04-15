@@ -4,13 +4,16 @@ import BaseHead from "../components/BaseHead.astro";
 
 export interface Props {
   title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
 }
 
-const { title } = Astro.props;
+const { title, description, image, type } = Astro.props;
 ---
 
 <html lang={SiteConfig.locale} class="dark">
-  <BaseHead title={title} />
+  <BaseHead title={title} description={description} image={image} type={type} />
   <body class="overflow-y-hidden" style="background-color: var(--background-color);">
     <div class="falling-elements-container">
       <div class="falling-element element-1"></div>
