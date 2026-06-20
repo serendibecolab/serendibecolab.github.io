@@ -2,7 +2,7 @@
 
 Official website for **Serendib Eco Lab**, an ecological research organisation based in Sri Lanka dedicated to the scientific study and conservation of the island's extraordinary biodiversity.
 
-🌐 **Live site:** <https://serendibecolab.github.io>
+🌐 **Live site:** <https://serendibecolabs.netlify.app/>
 
 ---
 
